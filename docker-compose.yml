@@ -4,6 +4,7 @@ volumes:
   pg_data:
   static:
 
+
 services:
   db:
     image: postgres:13
@@ -15,6 +16,7 @@ services:
     env_file: .env
     volumes:
       - static:/cats/backend_static
+
   frontend:
     env_file: .env
     build: ./frontend/
@@ -23,6 +25,7 @@ services:
       - static:/app/build
     depends_on:
       - backend
+
   gateway:
     build: ./nginx/
     env_file: .env
