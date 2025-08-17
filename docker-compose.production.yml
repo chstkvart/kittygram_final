@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   db:
     image: postgres:13.10
@@ -11,7 +10,7 @@ services:
     networks:
       - kittygram_network
   backend:
-    build: ./backend/
+    image: andos12/kittygram_backend:latest
     env_file: .env
     volumes:
       - static:/static/
@@ -30,7 +29,7 @@ services:
     networks:
       - kittygram_network
   frontend:
-    build: ./frontend/
+    image: andos12/kittygram_frontend:latest
     env_file: .env
     command: cp -r /app/build/. /static/frontend/
     volumes:
@@ -40,7 +39,7 @@ services:
     networks:
       - kittygram_network
   gateway:
-    build: ./nginx/
+    image: andos12/kittygram_gateway:latest
     env_file: .env
     volumes:
       - static:/static/
