@@ -1,9 +1,7 @@
-
-
 volumes:
   pg_data:
   static:
-
+  media:
 
 services:
   db:
@@ -16,21 +14,19 @@ services:
     env_file: .env
     volumes:
       - static:/cats/backend_static
-
+      - media:/cats/backend_media
   frontend:
     env_file: .env
     build: ./frontend/
     command: cp -r /app/build/. /static/
     volumes:
       - static:/app/build
-    depends_on:
-      - backend
-
   gateway:
     build: ./nginx/
     env_file: .env
     volumes:
       - static:/staticfiles
+      - media:/mediafiles
     ports:
       - '80:80'
       - '443:443'
