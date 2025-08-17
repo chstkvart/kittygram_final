@@ -14,7 +14,7 @@ services:
     env_file: .env
     volumes:
     - media_volume:/media
-    - static_volume:/backend_static
+    - static_volume:/static
   frontend:
     image: andos12/kittygram_frontend
     env_file: .env
