@@ -1,4 +1,4 @@
 repo_owner: andos12
-kittygram_domain: https://kittygram.stasbasov.ru
-taski_domain: https://taski.stasbasov.ru
+kittygram_domain: http://localhost/
+taski_domain: http://84.252.136.152:8000/
 dockerhub_username: andos12
