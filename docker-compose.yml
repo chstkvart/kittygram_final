@@ -1,30 +1,44 @@
-volumes:
-  pg_data:
-  static:
-  media:
-
+version: '3.8'
 services:
   db:
-    image: postgres:13
-    env_file: .env
+    image: postgres:13.10
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - kittygram_network
   backend:
     build: ./backend/
     env_file: .env
     volumes:
-    - media:/media/
-    - static:/static/
+      - static:/static/
+      - media:/media/
     depends_on:
-    - db
+      - db
+    command: >
+      sh -c "until pg_isready -h db -p 5432; do
+               echo 'Waiting for PostgreSQL...';
+               sleep 2;
+             done;
+             python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             cp -r /app/collected_static/. /static/backend/ &&
+             gunicorn --bind 0.0.0.0:9000 kittygram.wsgi"
+    networks:
+      - kittygram_network
   frontend:
-    env_file: .env
     build: ./frontend/
+    env_file: .env
     command: cp -r /app/build/. /static/frontend/
     volumes:
       - static:/static/
     depends_on:
       - backend
+    networks:
+      - kittygram_network
   gateway:
     build: ./nginx/
     env_file: .env
@@ -32,7 +46,16 @@ services:
       - static:/static/
       - media:/media/
     depends_on:
-    - backend
-    - frontend
+      - backend
+      - frontend
     ports:
       - '9000:80'
+    networks:
+      - kittygram_network
+volumes:
+  postgres_data:
+  static:
+  media:
+networks:
+  kittygram_network:
+    driver: bridge
