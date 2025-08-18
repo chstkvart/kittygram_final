@@ -22,7 +22,7 @@ services:
   frontend:
     image: andos12/kittygram_frontend:latest
     env_file: .env
-    command: cp -r /app/build/. /static/
+    command: cp -r /app/build/. /app/staticfiles/
     volumes:
       - static:/app/staticfiles
 
