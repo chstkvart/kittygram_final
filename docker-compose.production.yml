@@ -13,6 +13,7 @@ services:
   backend:
     image: andos12/kittygram_backend:latest
     env_file: .env
+    command: sh -c "python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:9000 kittygram_backend.wsgi"
     volumes:
       - static:/app/staticfiles
       - media:/app/media
