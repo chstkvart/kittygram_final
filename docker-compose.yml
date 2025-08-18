@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   db:
     image: postgres:13.10
@@ -10,8 +11,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - kittygram_network
+
   backend:
-    build: ./backend/
+    image: andos12/kittygram_backend:latest
     env_file: .env
     volumes:
       - static:/static/
@@ -25,22 +27,27 @@ services:
              done;
              python manage.py migrate &&
              python manage.py collectstatic --noinput &&
+             mkdir -p /static/backend/ &&
              cp -r /app/collected_static/. /static/backend/ &&
-             gunicorn --bind 0.0.0.0:9000 kittygram.wsgi"
+             gunicorn --bind 0.0.0.0:9000 kittygram_backend.wsgi"
     networks:
       - kittygram_network
+
   frontend:
-    build: ./frontend/
+    image: andos12/kittygram_frontend:latest
     env_file: .env
-    command: cp -r /app/build/. /static/frontend/
+    command: >
+      sh -c "mkdir -p /static/frontend/ &&
+             cp -r /app/build/. /static/frontend/"
     volumes:
       - static:/static/
     depends_on:
       - backend
     networks:
       - kittygram_network
+
   gateway:
-    build: ./nginx/
+    image: andos12/kittygram_gateway:latest
     env_file: .env
     volumes:
       - static:/static/
@@ -52,10 +59,12 @@ services:
       - '9000:80'
     networks:
       - kittygram_network
+
 volumes:
   postgres_data:
   static:
   media:
+
 networks:
   kittygram_network:
     driver: bridge
