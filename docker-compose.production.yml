@@ -1,14 +1,14 @@
 services:
   db:
     image: postgres:13.10
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    # environment:
+    #   POSTGRES_DB: ${POSTGRES_DB}
+    #   POSTGRES_USER: ${POSTGRES_USER}
+    #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - kittygram_network
+    # networks:
+    #   - kittygram_network
   backend:
     image: andos12/kittygram_backend:latest
     env_file: .env
@@ -31,7 +31,8 @@ services:
   frontend:
     image: andos12/kittygram_frontend:latest
     env_file: .env
-    command: cp -r /app/build/. /static/frontend/
+    command: cp -r /app/build/. /static/
+    # command: cp -r /app/build/. /static/frontend/
     volumes:
       - static:/static/
     depends_on:
