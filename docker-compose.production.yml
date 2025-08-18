@@ -1,14 +1,14 @@
 services:
   db:
     image: postgres:13.10
-    # environment:
-    #   POSTGRES_DB: ${POSTGRES_DB}
-    #   POSTGRES_USER: ${POSTGRES_USER}
-    #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    # networks:
-    #   - kittygram_network
+    networks:
+      - kittygram_network
   backend:
     image: andos12/kittygram_backend:latest
     env_file: .env
@@ -17,28 +17,27 @@ services:
       - media:/media/
     depends_on:
       - db
-    # command: >
-    #   sh -c "until pg_isready -h db -p 5432; do
-    #            echo 'Waiting for PostgreSQL...';
-    #            sleep 2;
-    #          done;
-    #          python manage.py migrate &&
-    #          python manage.py collectstatic --noinput &&
-    #          cp -r /app/collected_static/. /static/backend/ &&
-    #          gunicorn --bind 0.0.0.0:9000 kittygram.wsgi"
-    # networks:
-    #   - kittygram_network
+    command: >
+      sh -c "until pg_isready -h db -p 5432; do
+               echo 'Waiting for PostgreSQL...';
+               sleep 2;
+             done;
+             python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             cp -r /app/collected_static/. /static/backend/ &&
+             gunicorn --bind 0.0.0.0:9000 kittygram.wsgi"
+    networks:
+      - kittygram_network
   frontend:
     image: andos12/kittygram_frontend:latest
     env_file: .env
-    # command: cp -r /app/build/. /static/
     command: cp -r /app/build/. /static/frontend/
     volumes:
       - static:/static/
     depends_on:
       - backend
-    # networks:
-    #   - kittygram_network
+    networks:
+      - kittygram_network
   gateway:
     image: andos12/kittygram_gateway:latest
     env_file: .env
@@ -50,12 +49,12 @@ services:
       - frontend
     ports:
       - '9000:80'
-    # networks:
-    #   - kittygram_network
-# volumes:
-#   postgres_data:
-#   static:
-#   media:
-# networks:
-#   kittygram_network:
-#     driver: bridge
+    networks:
+      - kittygram_network
+volumes:
+  postgres_data:
+  static:
+  media:
+networks:
+  kittygram_network:
+    driver: bridge
