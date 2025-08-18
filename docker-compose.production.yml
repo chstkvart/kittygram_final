@@ -31,8 +31,8 @@ services:
   frontend:
     image: andos12/kittygram_frontend:latest
     env_file: .env
-    command: cp -r /app/build/. /static/
-    # command: cp -r /app/build/. /static/frontend/
+    # command: cp -r /app/build/. /static/
+    command: cp -r /app/build/. /static/frontend/
     volumes:
       - static:/static/
     depends_on:

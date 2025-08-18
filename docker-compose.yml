@@ -13,15 +13,11 @@ services:
   backend:
     build: ./backend/
     env_file: .env
-    command: >
-      sh -c "python manage.py collectstatic --noinput && 
-      gunicorn --bind 0.0.0.0:9000 kittygram_backend.wsgi"
     volumes:
       - static:/static/
       - media:/media/
     depends_on:
       - db
-    
     # command: >
     #   sh -c "until pg_isready -h db -p 5432; do
     #            echo 'Waiting for PostgreSQL...';
@@ -56,10 +52,10 @@ services:
       - '9000:80'
     # networks:
     #   - kittygram_network
-# volumes:
-#   postgres_data:
-#   static:
-#   media:
-# networks:
-#   kittygram_network:
-#     driver: bridge
+volumes:
+  postgres_data:
+  static:
+  media:
+networks:
+  kittygram_network:
+    driver: bridge
