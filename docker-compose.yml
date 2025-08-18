@@ -15,7 +15,9 @@ services:
     command: sh -c "python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:9000 kittygram_backend.wsgi"
     volumes:
       - static:/app/staticfiles
-      - media:/app/media 
+      - media:/app/media
+    depends_on:
+      - db
   frontend:
     env_file: .env
     build: ./frontend/
@@ -30,3 +32,6 @@ services:
       - media:/media
     ports:
       - 9000:80
+    depends_on:
+      - backend
+      - frontend
