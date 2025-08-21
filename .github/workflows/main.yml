@@ -14,7 +14,7 @@ jobs:
         env:
           POSTGRES_USER: django_user
           POSTGRES_PASSWORD: django_password
-          POSTGRES_DB: django
+          POSTGRES_DB: django_db
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -37,7 +37,7 @@ jobs:
       env:
         POSTGRES_USER: django_user
         POSTGRES_PASSWORD: django_password
-        POSTGRES_DB: django
+        POSTGRES_DB: django_db
         DB_HOST: 127.0.0.1
         DB_PORT: 5432
       run: |
@@ -151,22 +151,15 @@ jobs:
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
           cd kittygram
-          # Обновляем образы из DockerHub
+          # Выполняет pull образов с Docker Hub
           sudo docker compose -f docker-compose.production.yml pull
-          # Останавливаем старые контейнеры
+          # Перезапускает все контейнеры в Docker Compose
           sudo docker compose -f docker-compose.production.yml down
-          # Запускаем новые контейнеры
           sudo docker compose -f docker-compose.production.yml up -d
-          # Ждем запуска БД
-          sleep 10
-          # Применяем миграции
+          # Выполняет миграции и сбор статики
           sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate
-          # Собираем статику
-          sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic --noinput
-          # Копируем статику (если нужно)
-          sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/static/. /static/
-          # Перезапускаем nginx для применения изменений
-          sudo docker compose -f docker-compose.production.yml restart gateway
+          sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
+          sudo docker compose -f docker-compose.production.yml exec backend cp -r /static/django_static/. /static/
 
   send_message:
     runs-on: ubuntu-latest
