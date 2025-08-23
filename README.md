@@ -26,13 +26,16 @@ cd kittygram_final
 ```
 * Создайте файл .env в корневой директории проекта и заполните переменные окружения согласно инструкции ниже.
 * Запустите сборку и запуск контейнеров
-```docker-compose up -d --build
+```
+docker-compose up -d --build
 ```
 * Выполните миграции базы данных
-```docker-compose exec backend python manage.py migrate
+```
+docker-compose exec backend python manage.py migrate
 ```
 * Соберите статические файлы
-```docker-compose exec backend python manage.py collectstatic --no-input
+```
+docker-compose exec backend python manage.py collectstatic --no-input
 ```
 * Проект будет доступен по адресу: http://localhost:9000
 
