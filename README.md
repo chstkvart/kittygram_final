@@ -18,9 +18,11 @@
 **Локальное развертывание проекта**
 
 * Клонируйте репозиторий
-``` git clone https://github.com/andos12/kittygram_final.git
+``` 
+git clone https://github.com/andos12/kittygram_final.git
 ```
-```cd kittygram_final
+```
+cd kittygram_final
 ```
 * Создайте файл .env в корневой директории проекта и заполните переменные окружения согласно инструкции ниже.
 * Запустите сборку и запуск контейнеров
