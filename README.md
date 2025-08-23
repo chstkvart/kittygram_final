@@ -15,14 +15,40 @@
 
 ## Как развернуть проект
 
-В проекте настроен автоматический пайплайн развертывания с помощью GitHub Actions (файл .github/workflows/main.yml). При любом push в ветку main происходит:
+**Локальное развертывание проекта**
+
+* Клонируйте репозиторий
+``` git clone https://github.com/andos12/kittygram_final.git
+cd kittygram_final
+```
+* Создайте файл .env в корневой директории проекта и заполните переменные окружения согласно инструкции ниже.
+* Запустите сборку и запуск контейнеров
+```docker-compose up -d --build
+```
+* Выполните миграции базы данных
+```docker-compose exec backend python manage.py migrate
+```
+* Соберите статические файлы
+```docker-compose exec backend python manage.py collectstatic --no-input
+```
+* Проект будет доступен по адресу: http://localhost:9000
+
+**Переменные окружения (.env файл)**
+
+- DEBUG: Режим отладки (True для разработки, False для production)
+- SECRET_KEY: Секретный ключ Django (минимум 32 символа)
+- ALLOWED_HOSTS: Разрешенные хосты через запятую
+- POSTGRES_USER: Пользователь PostgreSQL
+- POSTGRES_PASSWORD: Пароль пользователя PostgreSQL
+- POSTGRES_DB: Имя базы данных PostgreSQL
+- DB_HOST: Хост базы данных (в Docker используйте имя сервиса db)
+- DB_PORT: Порт PostgreSQL (по умолчанию 5432)
+
+**В проекте настроен автоматический пайплайн развертывания с помощью GitHub Actions (файл .github/workflows/main.yml). При любом push в ветку main происходит:**
 
 * Сборка и тестирование Docker-образов.
-
 * Пуш собранных образов в Docker Hub.
-
 * Деплой обновленных контейнеров на удаленный сервер по SSH.
-
 * Автоматический запуск миграций и сбор статики на сервере.
 
 ## Автор
